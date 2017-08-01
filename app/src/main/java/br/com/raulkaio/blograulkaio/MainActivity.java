@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -33,14 +34,17 @@ public class MainActivity extends AppCompatActivity
     Button btnBack;
     WebView webview;
     private ProgressDialog progressDialog;
-    public final String urlBlog = "http://laguil.com.br";
+    public final String urlBlog = "http://raulkaio.com.br";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.getWindow().requestFeature(Window.FEATURE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        // Makes Progress bar Visible
+        getWindow().setFeatureInt( Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -69,18 +73,8 @@ public class MainActivity extends AppCompatActivity
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setDomStorageEnabled(true);
         webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        /*webview.getSettings().setAllowContentAccess(true);
-        webview.getSettings().setAllowFileAccess(true);
-        webview.getSettings().setAllowFileAccessFromFileURLs(true);
-        webview.getSettings().setAllowUniversalAccessFromFileURLs(true);
-        webview.getSettings().setAppCacheEnabled(true);
-        webview.getSettings().setBuiltInZoomControls(true);
-        webview.getSettings().setDisplayZoomControls(true);*/
 
         webview.setWebChromeClient(new WebChromeClient());
-
-        //Diminui o conteúdo trazido, como se estivesse no desktop, faz os itens na tela caberem todos de uma vez
-        //webview.getSettings().setUseWideViewPort(true);
 
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Carregando o conteúdo...");
@@ -95,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                MainActivity.this.setTitle(view.getTitle());
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }

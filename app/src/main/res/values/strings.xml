@@ -6,4 +6,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_sair">Sair</string>
+    <string name="nav_header_titulo">Blog Raul Kaio</string>
+    <string name="nav_header_subtitulo">CULTURA DO REINO E TECNOLOGIA</string>
+    <string name="nav_header_email">contato@raulkaio.com.br</string>
 </resources>
