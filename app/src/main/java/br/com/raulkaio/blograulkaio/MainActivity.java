@@ -1,5 +1,6 @@
 package br.com.raulkaio.blograulkaio;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+    }
+
+    Button btnBack;
+    WebView webview;
+    private ProgressDialog progressDialog;
+    public final String urlBlog = "http://laguil.com.br";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +59,68 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        webview=(WebView)findViewById(R.id.webviewsite);
+        webview.setWebViewClient(new MyWebViewClient());
+        webview.getSettings().setLoadWithOverviewMode(true);
+        webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+
+        //Habilita o uso de javascript, fez com que a aplicação conseguisse enviar os formulários para o site da prefeitura
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.getSettings().setDomStorageEnabled(true);
+        webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        /*webview.getSettings().setAllowContentAccess(true);
+        webview.getSettings().setAllowFileAccess(true);
+        webview.getSettings().setAllowFileAccessFromFileURLs(true);
+        webview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        webview.getSettings().setAppCacheEnabled(true);
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setDisplayZoomControls(true);*/
+
+        webview.setWebChromeClient(new WebChromeClient());
+
+        //Diminui o conteúdo trazido, como se estivesse no desktop, faz os itens na tela caberem todos de uma vez
+        //webview.getSettings().setUseWideViewPort(true);
+
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Carregando o conteúdo...");
+        progressDialog.show();
+
+        webview.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Toast.makeText(MainActivity.this, "Error:" + description, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        webview.loadUrl(urlBlog);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }*/
+
+        if (webview.canGoBack()) {
+            webview.goBack();
         } else {
             super.onBackPressed();
         }
@@ -67,8 +141,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
+        }*/
+
+        if (id == R.id.action_sair) {
+            finish();
+            System.exit(0);
         }
 
         return super.onOptionsItemSelected(item);
