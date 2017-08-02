@@ -6,6 +6,8 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_sair">Sair</string>
+    <string name="nav_header_titulo">CULTURA DO REINO E TECNOLOGIA</string>
     <string name="nav_header_subtitulo">raulkaio.com.br</string>
     <string name="nav_header_email">contato@raulkaio.com.br</string>
+    <string name="nav_inicio">Início</string>
 </resources>

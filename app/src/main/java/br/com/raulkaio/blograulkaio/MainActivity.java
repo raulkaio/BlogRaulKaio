@@ -23,18 +23,11 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private class MyWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    }
-
     Button btnBack;
     WebView webview;
     private ProgressDialog progressDialog;
-    public final String urlBlog = "http://raulkaio.com.br";
+    public static String urlBlog = "http://raulkaio.com.br";
+    public String titulo = "Blog Raul Kaio";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +35,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        MainActivity.this.setTitle(titulo);
 
         // Makes Progress bar Visible
         getWindow().setFeatureInt( Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -65,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         webview=(WebView)findViewById(R.id.webviewsite);
-        webview.setWebViewClient(new MyWebViewClient());
+        webview.setWebViewClient(new WebViewClient());
         webview.getSettings().setLoadWithOverviewMode(true);
         webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 
@@ -89,7 +83,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                MainActivity.this.setTitle(view.getTitle());
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -154,8 +147,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_inicio) {
+            urlBlog = "http://raulkaio.com.br";
+            webview.loadUrl(urlBlog);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
